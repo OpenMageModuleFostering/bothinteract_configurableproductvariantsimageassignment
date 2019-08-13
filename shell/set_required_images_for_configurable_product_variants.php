@@ -4,8 +4,8 @@ require_once 'abstract.php';
 
 /**
  * @author Matthias Kerstner <matthias@both-interact.com>
- * @version 1.5.0
- * @copyright (c) 2015, Both Interact GmbH
+ * @version 1.6.0
+ * @copyright (c) 2016, Both Interact GmbH
  */
 class Mage_Shell_Set_Required_Images_For_Configurable_Product_Variants extends Mage_Shell_Abstract {
 

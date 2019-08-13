@@ -20,8 +20,8 @@
  * @see self::$LOG_FILE.
  *  
  * @author Matthias Kerstner <matthias@both-interact.com>
- * @version 1.5.0
- * @copyright (c) 2015, Both Interact GmbH
+ * @version 1.6.0
+ * @copyright (c) 2016, Both Interact GmbH
  */
 class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
 
