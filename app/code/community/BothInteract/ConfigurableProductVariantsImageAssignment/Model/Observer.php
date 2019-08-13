@@ -20,7 +20,7 @@
  * @see self::$LOG_FILE.
  *  
  * @author Matthias Kerstner <matthias@both-interact.com>
- * @version 1.6.0
+ * @version 1.6.1
  * @copyright (c) 2016, Both Interact GmbH
  */
 class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
@@ -70,6 +70,7 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
     /**
      * Returns absolute path to base image set on $product. If no image of type
      * $imageType is currently set will return NULL.
+     * 
      * @param Mage_Catalog_Model_Product $product
      * @param string $imageType image type, i.e. image (base image), 
      *        small_image, thumbnail
@@ -99,13 +100,15 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
         $imageUrl = Mage::getModel('catalog/product_media_config')
                 ->getMediaUrl($image, array('_secure' => $isHttps));
         $baseDir = Mage::getBaseDir();
-        $withoutIndex = str_replace('index.php/', '', Mage::getBaseUrl($isHttps));
-        $imageWithoutBase = str_replace($withoutIndex, '', $imageUrl);
-        return ($baseDir . DIRECTORY_SEPARATOR . $imageWithoutBase);
+        $mediaUrlwithoutIndex = str_replace('index.php/', '', Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB));
+        $mediaUrlwithoutBase = str_replace($mediaUrlwithoutIndex, '', $imageUrl);
+
+        return ($baseDir . DIRECTORY_SEPARATOR . $mediaUrlwithoutBase);
     }
 
     /**
      * Returns absolute path the product's based image if set, otherwise NULL.
+     * 
      * @param Mage_Catalog_Model_Product $product
      * @param boolean $isHttps
      * @return string|NULL
@@ -119,11 +122,16 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
         if ($product->getImage() == '' ||
                 $product->getImage() == self::$IMAGE_NO_SELECTION) {
             $this->logToFile('WARNING: product ' . $product->getId()
-                    . ' does not have a base image set');
+                    . ' does not have a base image set.'
+                    . ' Make sure that parent product has a base image set and '
+                    . 'check that entry "No image" is not set as base image in '
+                    . 'admin backend.');
             return null;
         }
 
         $productBaseImagePath = $this->getImagePath($product, self::$IMAGE_TYPE_BASE_IMAGE, $isHttps);
+
+        $this->logToFile('Using parent product image: ' . $productBaseImagePath);
 
         if (!is_file($productBaseImagePath)) {
             $this->logToFile('WARNING: parent product ' . $product->getId()
@@ -151,7 +159,10 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
                 . mb_strtoupper($childProduct->getTypeId())
                 . ' product ' . $childProduct->getId());
 
-        $isHttps = true; //TODO: load from config
+        $isHttps = Mage::getStoreConfig(self::$_MODULE_NAMESPACE
+                        . '/general/is_https_media_urls');
+
+        $this->logToFile('Using SSL for image URLs: ' . ($isHttps ? 'YES' : 'NO'));
 
         $parentProductBaseImagePath = $this->getProductBaseImagePath($parentProduct, $isHttps);
 
@@ -278,7 +289,9 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
     }
 
     /**
-     * Handles configurable prod
+     * Handles configurable product and determine associated (child) products
+     * to process.
+     * 
      * @param Mage_Catalog_Model_Product $product
      * @param array $requiredChildProductImageTypes
      */
@@ -311,8 +324,9 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
     }
 
     /**
-     * Handles product save event calls by checking product type and settings
+     * Handles product save_after events by checking product type and settings
      * required image types.
+     * 
      * @param Varien_Event_Observer $observer
      */
     public function catalog_product_save_after(Varien_Event_Observer $observer) {
@@ -329,12 +343,25 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
     }
 
     /**
-     * Can be of any product type, e.g. configurable, grouped, simple,
+     * Product specified can be of any type, e.g. configurable, grouped, 
+     * simple, etc.
+     * 
+     * Make sure that this product is loaded here once for the remaining
+     * process.
+     * 
      * @param Mage_Catalog_Model_Product $product Can be of any valid product 
      *        type, e.g. configurable, grouped, simple, ...
      */
     public function processProduct(Mage_Catalog_Model_Product $product) {
         try {
+
+            /**
+             * first make sure that $product is fully loaded and keep reference 
+             * to original product from event        
+             */
+            $_product = $product; // copy
+            $product = Mage::getModel('catalog/product')->load($product->getId());
+
             $this->logToFile('==================================================');
             $this->logToFile('Checking product ' . $product->getId()
                     . ' of type ' . mb_strtoupper($product->getTypeId())
@@ -348,7 +375,7 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
              * - IMAGE_TYPE_SMALL_IMAGE  
              * - IMAGE_TYPE_THUMBNAIL.
              * 
-             * Make sure that this list always includes at least 
+             * Make sure that this list *always* includes at least 
              * IMAGE_TYPE_BASE_IMAGE for e.g. Amazon Listing to work since it 
              * requires a base image.
              * 
