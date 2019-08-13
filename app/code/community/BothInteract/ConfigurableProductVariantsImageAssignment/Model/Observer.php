@@ -20,10 +20,13 @@
  * @see self::$LOG_FILE.
  *  
  * @author Matthias Kerstner <matthias@both-interact.com>
- * @version 1.3.0
+ * @version 1.5.0
  * @copyright (c) 2015, Both Interact GmbH
  */
 class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
+
+    /** @var string module namespace */
+    private static $_MODULE_NAMESPACE = 'bothinteract_configurableproductvariantsimageassignment';
 
     /** @var string placeholder text if no image is set */
     private static $IMAGE_NO_SELECTION = 'no_selection';
@@ -43,11 +46,12 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
      */
     private function logToFile($msg) {
         Mage::log($msg, null, Mage::getStoreConfig(
-                        'bothinteract_configurableproductvariantsimageassignment/general/log_file', Mage::app()->getStore()));
+                        self::$_MODULE_NAMESPACE
+                        . '/general/log_file', Mage::app()->getStore()));
     }
 
     /**
-     * 
+     * Converts source view value to internal image type.
      * @return array
      */
     private function valueToImageType($value) {
@@ -215,7 +219,8 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
              */
             $childProduct->addImageToMediaGallery($parentProductBaseImagePath, $requiredChildProductImageTypes, false, false);
 
-            if (Mage::getStoreConfig('bothinteract_configurableproductvariantsimageassignment/general/is_simulation')) {
+            if (Mage::getStoreConfig(self::$_MODULE_NAMESPACE
+                            . '/general/is_simulation')) {
                 $this->logToFile('************************************');
                 $this->logToFile('SIMULATION: Not saving child product '
                         . $childProduct->getId());
@@ -312,7 +317,8 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
      */
     public function catalog_product_save_after(Varien_Event_Observer $observer) {
         try {
-            if (!Mage::getStoreConfig('bothinteract_configurableproductvariantsimageassignment/general/is_active', Mage::app()->getStore())) {
+            if (!Mage::getStoreConfig(self::$_MODULE_NAMESPACE
+                            . '/general/is_active', Mage::app()->getStore())) {
                 $this->logToFile('Extension INACTIVE - Quitting...');
                 return;
             }
@@ -349,7 +355,8 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
              * Options are taken from system config source view.
              */
             $requiredChildProductImageTypes = array();
-            $requiredChildProductImageTypeValues = explode(',', Mage::getStoreConfig('bothinteract_configurableproductvariantsimageassignment/general/required_image_types', Mage::app()->getStore()));
+            $requiredChildProductImageTypeValues = explode(',', Mage::getStoreConfig(self::$_MODULE_NAMESPACE
+                            . '/general/required_image_types', Mage::app()->getStore()));
 
             foreach ($requiredChildProductImageTypeValues as $requiredChildProductImageTypeValue) {
                 $val = $this->valueToImageType($requiredChildProductImageTypeValue);

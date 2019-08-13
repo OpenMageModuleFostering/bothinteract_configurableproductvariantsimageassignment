@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <BothInteract_ConfigurableProductVariantsImageAssignment>
+            <active>true</active>
+            <codePool>community</codePool>
+        </BothInteract_ConfigurableProductVariantsImageAssignment>
+    </modules>
+</config>

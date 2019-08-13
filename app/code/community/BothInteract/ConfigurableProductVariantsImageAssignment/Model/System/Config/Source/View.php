@@ -2,13 +2,18 @@
 
 /**
  * @author Matthias Kerstner <matthias@both-interact.com>
- * @version 1.3.0
+ * @version 1.5.0
  * @copyright (c) 2015, Both Interact GmbH
  */
 class BothInteract_ConfigurableProductVariantsImageAssignment_Model_System_Config_Source_View {
 
+    /** @var string base image type */
     public static $VALUE_IMAGE_TYPE_BASE_IMAGE = 0;
+
+    /** @var string small image type */
     public static $VALUE_IMAGE_TYPE_SMALL_IMAGE = 1;
+
+    /** @var string thumbnail image type */
     public static $VALUE_IMAGE_TYPE_THUMBNAIL = 2;
 
     /**
