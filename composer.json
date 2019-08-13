@@ -3,7 +3,7 @@
     "type": "magento-module",
     "license": "MIT-License-(MITL)",
     "homepage": "",
-    "description": "Automatically copies custom list of required image types from configurable products to variants on save.",
+    "description": "Automatically copies custom list of required image types from configurable products to variants.",
     "authors": [
     {
         "name": "Matthias Kerstner",

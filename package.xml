@@ -1,21 +1,52 @@
 <?xml version="1.0"?>
 <package>
     <name>BothInteract_ConfigurableProductVariantsImageAssignment</name>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <stability>stable</stability>
     <license uri="http://www.opensource.org/licenses/mit-license.php">MIT License (MITL)</license>
     <channel>community</channel>
     <extends/>
-    <summary>Automatically copies custom list of required image types from configurable products to variants on save.</summary>
-    <description>This extension automatically copies a custom list of required image types (i.e. base image, small image, thumbail) from parent configurable products to variants (i.e. associated child simple products) once parent is saved.&#xD;
+    <summary>Automatically copies custom list of required image types from configurable products to variants.</summary>
+    <description>&lt;p&gt;This extension enables you to &lt;b&gt;automatically copy a custom list of required image types&lt;/b&gt; from parent configurable products to variants (i.e. associated child simple products) once the parent product is saved.&lt;/p&gt;&#xD;
 &#xD;
-Logs messages to custom log file that can be specified in the configuration options in your log directory. This way you can easily track events handled by this extension and check for possible problems.&#xD;
+&lt;p&gt;Thus, you can create copies of your configurable products like you used to do and this extension will take care of automatically copying required image types from your parent product to all children product variants.&lt;/p&gt;&#xD;
 &#xD;
-For your convenience you can also &lt;b&gt;simulate&lt;/b&gt; the process of automatically assigning your list of required image type to child product by activating the option in the configuration menu. </description>
-    <notes>Added configuration options in admin backend.</notes>
+&lt;h3&gt;Images Types&lt;/h3&gt;&#xD;
+&lt;p&gt;The list of possible image types includes:&lt;/p&gt;&#xD;
+&lt;ul&gt;&#xD;
+&lt;li&gt;Base image&lt;/li&gt;&#xD;
+&lt;li&gt;Small image&lt;/li&gt;&#xD;
+&lt;li&gt;Thumbnail&lt;/li&gt;&#xD;
+&lt;/ul&gt;&#xD;
+&#xD;
+&lt;p&gt;You can easily set your required images types for child products associated with configurable products using the configuration tab.&lt;/p&gt;&#xD;
+&#xD;
+&lt;h3&gt;Overwriting Images&lt;/h3&gt;&#xD;
+&lt;p&gt;Please note that &lt;b&gt;only the required image types set in the configuration will be copied to child products&lt;/b&gt;.&lt;/p&gt;&#xD;
+&#xD;
+&lt;p&gt;Thus, if you manually set any of the required image types when creating your product variants (e.g. via &lt;i&gt;Copy from Configurable&lt;/i&gt;) they will &lt;b&gt;not be overwritten&lt;/b&gt; when saving the parent configurable product.&lt;/p&gt; &#xD;
+&#xD;
+&lt;p&gt;In conclusion, you can consider this extension as helpful addition to automatically set required image typed for product variants.&lt;/p&gt;&#xD;
+&#xD;
+&lt;h3&gt;Simulate Image Assignment&lt;/h3&gt;&#xD;
+&lt;p&gt;Furthermore, you can also &lt;b&gt;simulate&lt;/b&gt; the process of auto-assigning images from your parent products to associated by activating the corresponding option in the configuration under &lt;i&gt;General&lt;/i&gt; / &lt;i&gt;Simulate&lt;/i&gt;. This way you can easily check beforehand if your child products need required image types set in the configuration.&lt;/p&gt;&#xD;
+&#xD;
+&lt;h3&gt;Log File&lt;/h3&gt;&#xD;
+&lt;p&gt;In addition this extension enabled you to logs messages to a custom log file that can be specified in the configuration options to your log directory under &lt;i&gt;General&lt;/i&gt; / &lt;i&gt;Log File&lt;/i&gt;.&lt;/p&gt; &#xD;
+&#xD;
+&lt;p&gt;So you have the option to easily track events handled by this extension and check for possible problems.&lt;/p&gt;&#xD;
+&#xD;
+</description>
+    <notes>Initial public release.&#xD;
+&#xD;
+Features: &#xD;
+&#xD;
++ simple configuration via backend&#xD;
++ simulate auto assigning image without changing products&#xD;
++ specify required image types to be copied from parent product to child </notes>
     <authors><author><name>Matthias Kerstner</name><user>mkbothinteract</user><email>matthias@both-interact.com</email></author></authors>
-    <date>2015-01-21</date>
-    <time>16:25:56</time>
+    <date>2015-01-22</date>
+    <time>08:34:17</time>
     <contents><target name="magecommunity"><dir name="BothInteract"><dir name="ConfigurableProductVariantsImageAssignment"><dir name="Model"><file name="Observer.php" hash="0595508f7f31692191b5d5d272888553"/><dir name="System"><dir name="Config"><dir name="Source"><file name="View.php" hash="611957ad032244303e103d682f7e1b94"/></dir></dir></dir></dir><dir name="etc"><file name="config.xml" hash="262c9016cf02f07b8cf96580b0d59dde"/><file name="system.xml" hash="07c7117572dc03d239e66161f5ce79dd"/><file name="adminhtml.xml" hash="17ff98ec54bdda6275f8024ee5d5d39f"/></dir></dir></dir></target><target name="mageetc"><dir name="modules"><dir name="BothInteract_BothInteract"><dir name="ConfigurableProductVariantsImageAssignment"><file name="BothInteract_ConfigurableProductVariantsImageAssignment.xml" hash=""/></dir></dir></dir></target></contents>
     <compatible/>
     <dependencies><required><php><min>5.3.0</min><max>5.6.3</max></php></required></dependencies>
