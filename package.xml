@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
     <name>BothInteract_ConfigurableProductVariantsImageAssignment</name>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <stability>stable</stability>
     <license uri="http://www.opensource.org/licenses/mit-license.php">MIT License (MITL)</license>
     <channel>community</channel>
@@ -9,12 +9,14 @@
     <summary>Automatically copies custom list of required image types from configurable products to variants on save.</summary>
     <description>This extension automatically copies a custom list of required image types (i.e. base image, small image, thumbail) from parent configurable products to variants (i.e. associated child simple products) once parent is saved.&#xD;
 &#xD;
-Logs messages to custom log file configurableproductvariantsimageassignment.log in your log directory. This way you can easily track events handled by this extension and check for possible problems.</description>
-    <notes>Initial public release.</notes>
+Logs messages to custom log file that can be specified in the configuration options in your log directory. This way you can easily track events handled by this extension and check for possible problems.&#xD;
+&#xD;
+For your convenience you can also &lt;b&gt;simulate&lt;/b&gt; the process of automatically assigning your list of required image type to child product by activating the option in the configuration menu. </description>
+    <notes>Added configuration options in admin backend.</notes>
     <authors><author><name>Matthias Kerstner</name><user>mkbothinteract</user><email>matthias@both-interact.com</email></author></authors>
     <date>2015-01-21</date>
-    <time>11:32:49</time>
-    <contents><target name="magecommunity"><dir name="BothInteract"><dir name="ConfigurableProductVariantsImageAssignment"><dir name="Model"><file name="Observer.php" hash="738936e385908a5b730e7f366f388393"/></dir><dir name="etc"><file name="config.xml" hash="401d1569864aedd91fdd70a7d4be6148"/></dir></dir></dir></target><target name="mageetc"><dir name="modules"><dir name="BothInteract_BothInteract"><dir name="ConfigurableProductVariantsImageAssignment"><file name="BothInteract_ConfigurableProductVariantsImageAssignment.xml" hash=""/></dir></dir></dir></target></contents>
+    <time>16:25:56</time>
+    <contents><target name="magecommunity"><dir name="BothInteract"><dir name="ConfigurableProductVariantsImageAssignment"><dir name="Model"><file name="Observer.php" hash="0595508f7f31692191b5d5d272888553"/><dir name="System"><dir name="Config"><dir name="Source"><file name="View.php" hash="611957ad032244303e103d682f7e1b94"/></dir></dir></dir></dir><dir name="etc"><file name="config.xml" hash="262c9016cf02f07b8cf96580b0d59dde"/><file name="system.xml" hash="07c7117572dc03d239e66161f5ce79dd"/><file name="adminhtml.xml" hash="17ff98ec54bdda6275f8024ee5d5d39f"/></dir></dir></dir></target><target name="mageetc"><dir name="modules"><dir name="BothInteract_BothInteract"><dir name="ConfigurableProductVariantsImageAssignment"><file name="BothInteract_ConfigurableProductVariantsImageAssignment.xml" hash=""/></dir></dir></dir></target></contents>
     <compatible/>
     <dependencies><required><php><min>5.3.0</min><max>5.6.3</max></php></required></dependencies>
 </package>

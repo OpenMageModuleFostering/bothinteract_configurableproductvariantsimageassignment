@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Observer class that handles automatic image assignment for child products of
- * configurable products (i.e. associated products) once a configurable product
- * is being save()'d.
+ * Handles automatic image assignment for child products of configurable 
+ * products (i.e. associated products) once a configurable product is being 
+ * save()'d.
  * 
  * It is possible to set the list of required image types for child products:
  * - @see self::$IMAGE_TYPE_BASE_IMAGE
@@ -25,27 +25,42 @@
  */
 class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
 
-    /** @var string name of logfile */
-    private static $LOG_FILE = 'bothinteract_configurableproductvariantsimageassignment.log';
-
     /** @var string placeholder text if no image is set */
     private static $IMAGE_NO_SELECTION = 'no_selection';
 
     /** @var string base image type used by Magento */
-    private static $IMAGE_TYPE_BASE_IMAGE = 'image';
+    public static $IMAGE_TYPE_BASE_IMAGE = 'image';
 
     /** @var string small_image type used by Magento */
-    private static $IMAGE_TYPE_SMALL_IMAGE = 'small_image';
+    public static $IMAGE_TYPE_SMALL_IMAGE = 'small_image';
 
     /** @var string thumbnail image type used by Magento */
-    private static $IMAGE_TYPE_THUMBNAIL = 'thumbnail';
+    public static $IMAGE_TYPE_THUMBNAIL = 'thumbnail';
 
     /**
-     * Logs $msg to logfile.
+     * Logs $msg to logfile specified in configuration.
      * @param string $msg
      */
     private function logToFile($msg) {
-        Mage::log($msg, null, self::$LOG_FILE);
+        Mage::log($msg, null, Mage::getStoreConfig(
+                        'bothinteract_configurableproductvariantsimageassignment/general/log_file', Mage::app()->getStore()));
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    private function valueToImageType($value) {
+        $arr = array(
+            BothInteract_ConfigurableProductVariantsImageAssignment_Model_System_Config_Source_View::$VALUE_IMAGE_TYPE_BASE_IMAGE =>
+            self::$IMAGE_TYPE_BASE_IMAGE,
+            BothInteract_ConfigurableProductVariantsImageAssignment_Model_System_Config_Source_View::$VALUE_IMAGE_TYPE_SMALL_IMAGE =>
+            self::$IMAGE_TYPE_SMALL_IMAGE,
+            BothInteract_ConfigurableProductVariantsImageAssignment_Model_System_Config_Source_View::$VALUE_IMAGE_TYPE_THUMBNAIL =>
+            self::$IMAGE_TYPE_THUMBNAIL
+        );
+
+        return isset($arr[$value]) ? $arr[$value] : null;
     }
 
     /**
@@ -159,7 +174,10 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
              * folder.
              */
             $childProduct->addImageToMediaGallery($parentProductBaseImagePath, $requiredChildProductImageTypes, false, false);
-            $childProduct->save();
+
+            if (!Mage::getStoreConfig('bothinteract_configurableproductvariantsimageassignment/general/is_simulation')) {
+                $childProduct->save();
+            }
 
             $this->logToFile('Successfully set required image type(s) ['
                     . implode(',', $requiredChildProductImageTypes)
@@ -284,6 +302,12 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
      */
     public function catalog_product_save_after(Varien_Event_Observer $observer) {
         try {
+
+            if (!Mage::getStoreConfig('bothinteract_configurableproductvariantsimageassignment/general/is_active', Mage::app()->getStore())) {
+                $this->logToFile('Extension INACTIVE - Quitting...');
+                return;
+            }
+
             /**
              * Can be of any product type, e.g. configurable, grouped, simple,
              * @var $order Mage_Catalog_Model_Product
@@ -307,9 +331,18 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
              * IMAGE_TYPE_BASE_IMAGE for e.g. Amazon Listing to work since it 
              * requires a base image.
              * 
-             * TODO: load these settings from admin backend
+             * Options are taken from system config source view.
              */
-            $requiredChildProductImageTypes = array(self::$IMAGE_TYPE_BASE_IMAGE);
+            $requiredChildProductImageTypes = array();
+            $requiredChildProductImageTypeValues = explode(',', Mage::getStoreConfig('bothinteract_configurableproductvariantsimageassignment/general/required_image_types', Mage::app()->getStore()));
+
+            foreach ($requiredChildProductImageTypeValues as $requiredChildProductImageTypeValue) {
+                $val = $this->valueToImageType($requiredChildProductImageTypeValue);
+
+                if ($val) {
+                    $requiredChildProductImageTypes[] = $val;
+                }
+            }
 
             if ($product->getTypeId() === Mage_Catalog_Model_Product_Type::TYPE_SIMPLE) {
                 $this->handleSimpleProduct($product, $requiredChildProductImageTypes);
