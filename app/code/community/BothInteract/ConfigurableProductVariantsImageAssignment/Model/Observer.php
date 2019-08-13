@@ -20,8 +20,8 @@
  * @see self::$LOG_FILE.
  *  
  * @author Matthias Kerstner <matthias@both-interact.com>
- * @version 1.0.0
- * @copyright (c) 2014, Both Interact GmbH
+ * @version 1.3.0
+ * @copyright (c) 2015, Both Interact GmbH
  */
 class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
 
@@ -64,11 +64,49 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
     }
 
     /**
-     * Returns absolute path the product's based image if set, otherwise NULL.
+     * Returns absolute path to base image set on $product. If no image of type
+     * $imageType is currently set will return NULL.
      * @param Mage_Catalog_Model_Product $product
+     * @param string $imageType image type, i.e. image (base image), 
+     *        small_image, thumbnail
+     * @param boolean $isHttps
      * @return string|NULL
      */
-    private function getProductBaseImagePath(Mage_Catalog_Model_Product $product) {
+    private function getImagePath(Mage_Catalog_Model_Product $product, $imageType, $isHttps = false) {
+
+        if ($product->getImage() == '' ||
+                $product->getImage() == self::$IMAGE_NO_SELECTION) {
+            return null;
+        }
+
+        $image = null;
+
+        if ($imageType === self::$IMAGE_TYPE_BASE_IMAGE) {
+            $image = $product->getImage();
+        } else if ($imageType === self::$IMAGE_TYPE_SMALL_IMAGE) {
+            $image = $product->getSmallImage();
+        } else if ($imageType === self::$IMAGE_TYPE_THUMBNAIL) {
+            $image = $product->getThumbnail();
+        } else {
+            $this->logToFile('Invalid image type specified: ' . $imageType);
+            return null;
+        }
+
+        $imageUrl = Mage::getModel('catalog/product_media_config')
+                ->getMediaUrl($image, array('_secure' => $isHttps));
+        $baseDir = Mage::getBaseDir();
+        $withoutIndex = str_replace('index.php/', '', Mage::getBaseUrl($isHttps));
+        $imageWithoutBase = str_replace($withoutIndex, '', $imageUrl);
+        return ($baseDir . DIRECTORY_SEPARATOR . $imageWithoutBase);
+    }
+
+    /**
+     * Returns absolute path the product's based image if set, otherwise NULL.
+     * @param Mage_Catalog_Model_Product $product
+     * @param boolean $isHttps
+     * @return string|NULL
+     */
+    private function getProductBaseImagePath(Mage_Catalog_Model_Product $product, $isHttps = false) {
 
         $this->logToFile('Product Base image: ' . $product->getImage());
         $this->logToFile('Product Small image: ' . $product->getSmallImage());
@@ -81,7 +119,7 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
             return null;
         }
 
-        $productBaseImagePath = $this->getImagePath($product, self::$IMAGE_TYPE_BASE_IMAGE);
+        $productBaseImagePath = $this->getImagePath($product, self::$IMAGE_TYPE_BASE_IMAGE, $isHttps);
 
         if (!is_file($productBaseImagePath)) {
             $this->logToFile('WARNING: parent product ' . $product->getId()
@@ -109,7 +147,9 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
                 . mb_strtoupper($childProduct->getTypeId())
                 . ' product ' . $childProduct->getId());
 
-        $parentProductBaseImagePath = $this->getProductBaseImagePath($parentProduct);
+        $isHttps = true; //TODO: load from config
+
+        $parentProductBaseImagePath = $this->getProductBaseImagePath($parentProduct, $isHttps);
 
         if (!$parentProductBaseImagePath) {
             $this->logToFile('WARNING: Failed to determine parent product '
@@ -175,7 +215,13 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
              */
             $childProduct->addImageToMediaGallery($parentProductBaseImagePath, $requiredChildProductImageTypes, false, false);
 
-            if (!Mage::getStoreConfig('bothinteract_configurableproductvariantsimageassignment/general/is_simulation')) {
+            if (Mage::getStoreConfig('bothinteract_configurableproductvariantsimageassignment/general/is_simulation')) {
+                $this->logToFile('************************************');
+                $this->logToFile('SIMULATION: Not saving child product '
+                        . $childProduct->getId());
+                $this->logToFile('************************************');
+            } else {
+                $this->logToFile('Saving child product ' . $childProduct->getId());
                 $childProduct->save();
             }
 
@@ -183,42 +229,6 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
                     . implode(',', $requiredChildProductImageTypes)
                     . '] for child product ' . $childProduct->getId());
         }
-    }
-
-    /**
-     * Returns absolute path to base image set on $product. If no image of type
-     * $imageType is currently set will return NULL.
-     * @param Mage_Catalog_Model_Product $product
-     * @param string $imageType image type, i.e. image (base image), 
-     *        small_image, thumbnail
-     * @return string|NULL
-     */
-    private function getImagePath(Mage_Catalog_Model_Product $product, $imageType) {
-
-        if ($product->getImage() == '' ||
-                $product->getImage() == self::$IMAGE_NO_SELECTION) {
-            return null;
-        }
-
-        $image = null;
-
-        if ($imageType === self::$IMAGE_TYPE_BASE_IMAGE) {
-            $image = $product->getImage();
-        } else if ($imageType === self::$IMAGE_TYPE_SMALL_IMAGE) {
-            $image = $product->getSmallImage();
-        } else if ($imageType === self::$IMAGE_TYPE_THUMBNAIL) {
-            $image = $product->getThumbnail();
-        } else {
-            $this->logToFile('Invalid image type specified: ' . $imageType);
-            return null;
-        }
-
-        $imageUrl = Mage::getModel('catalog/product_media_config')
-                ->getMediaUrl($image);
-        $baseDir = Mage::getBaseDir();
-        $withoutIndex = str_replace('index.php/', '', Mage::getBaseUrl());
-        $imageWithoutBase = str_replace($withoutIndex, '', $imageUrl);
-        return ($baseDir . DIRECTORY_SEPARATOR . $imageWithoutBase);
     }
 
     /**
@@ -302,18 +312,23 @@ class BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer {
      */
     public function catalog_product_save_after(Varien_Event_Observer $observer) {
         try {
-
             if (!Mage::getStoreConfig('bothinteract_configurableproductvariantsimageassignment/general/is_active', Mage::app()->getStore())) {
                 $this->logToFile('Extension INACTIVE - Quitting...');
                 return;
             }
+            $this->processProduct($observer->getEvent()->getProduct());
+        } catch (Exception $e) {
+            $this->logToFile('ERROR: ' . $e->getMessage());
+        }
+    }
 
-            /**
-             * Can be of any product type, e.g. configurable, grouped, simple,
-             * @var $order Mage_Catalog_Model_Product
-             */
-            $product = $observer->getEvent()->getProduct();
-
+    /**
+     * Can be of any product type, e.g. configurable, grouped, simple,
+     * @param Mage_Catalog_Model_Product $product Can be of any valid product 
+     *        type, e.g. configurable, grouped, simple, ...
+     */
+    public function processProduct(Mage_Catalog_Model_Product $product) {
+        try {
             $this->logToFile('==================================================');
             $this->logToFile('Checking product ' . $product->getId()
                     . ' of type ' . mb_strtoupper($product->getTypeId())

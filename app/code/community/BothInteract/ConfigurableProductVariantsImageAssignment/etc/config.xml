@@ -4,7 +4,7 @@
     
     <modules>
         <BothInteract_ConfigurableProductVariantsImageAssignment>
-            <version>1.0.0</version>
+            <version>1.3.0</version>
         </BothInteract_ConfigurableProductVariantsImageAssignment>
     </modules>
     
@@ -34,6 +34,7 @@
             <general>
                 <is_active>0</is_active>
                 <is_simulation>1</is_simulation>
+                <is_https_media_urls>0</is_https_media_urls>
                 <required_image_types></required_image_types>
                 <log_file>configurableproductvariantsimageassignment.log</log_file>
             </general>

@@ -2,8 +2,8 @@
 
 /**
  * @author Matthias Kerstner <matthias@both-interact.com>
- * @version 1.0.0
- * @copyright (c) 2014, Both Interact GmbH
+ * @version 1.3.0
+ * @copyright (c) 2015, Both Interact GmbH
  */
 class BothInteract_ConfigurableProductVariantsImageAssignment_Model_System_Config_Source_View {
 
