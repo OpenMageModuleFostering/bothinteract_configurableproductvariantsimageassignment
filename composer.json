@@ -1,0 +1,16 @@
+{
+    "name": "OpenMageModuleFostering/BothInteract_ConfigurableProductVariantsImageAssignment",
+    "type": "magento-module",
+    "license": "MIT-License-(MITL)",
+    "homepage": "",
+    "description": "Automatically copies custom list of required image types from configurable products to variants on save.",
+    "authors": [
+    {
+        "name": "Matthias Kerstner",
+        "email": "matthias@both-interact.com"
+    }
+],
+    "suggest": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}

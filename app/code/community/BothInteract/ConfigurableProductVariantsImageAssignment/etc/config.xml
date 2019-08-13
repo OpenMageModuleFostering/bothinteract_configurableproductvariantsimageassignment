@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <BothInteract_ConfigurableProductVariantsImageAssignment>
+            <version>1.0.0</version>
+        </BothInteract_ConfigurableProductVariantsImageAssignment>
+    </modules>
+    <global>
+        <!-- inform Magento of our new model class-->
+        <models>
+            <bothinteract_configurableproductvariantsimageassignment>
+                <class>BothInteract_ConfigurableProductVariantsImageAssignment_Model</class>
+            </bothinteract_configurableproductvariantsimageassignment>
+        </models>
+        <!-- attach our observer class to catalog_product_save_after event-->
+        <events>
+            <catalog_product_save_after>
+                <observers>
+                    <bothinteract_configurableproductvariantsimageassignment_model_observer>
+                        <type>singleton</type>
+                        <class>BothInteract_ConfigurableProductVariantsImageAssignment_Model_Observer</class>
+                        <method>catalog_product_save_after</method>
+                    </bothinteract_configurableproductvariantsimageassignment_model_observer>
+                </observers>
+            </catalog_product_save_after>
+        </events>
+    </global>
+</config>
