@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
     <name>BothInteract_ConfigurableProductVariantsImageAssignment</name>
-    <version>1.6.1</version>
+    <version>1.6.2</version>
     <stability>stable</stability>
     <license uri="http://www.opensource.org/licenses/mit-license.php">MIT License (MITL)</license>
     <channel>community</channel>
@@ -36,12 +36,11 @@
 &#xD;
 &lt;p&gt;So you have the option to easily track events handled by this extension and check for possible problems.&lt;/p&gt;&#xD;
 </description>
-    <notes>+ now uses configuration setting via admin for secure image URLs&#xD;
-* fixed media path calculation issue</notes>
+    <notes>* fixed configuration files</notes>
     <authors><author><name>Matthias Kerstner</name><user>mkbothinteract</user><email>matthias@both-interact.com</email></author></authors>
     <date>2016-04-25</date>
-    <time>12:07:03</time>
-    <contents><target name="magecommunity"><dir name="BothInteract"><dir name="ConfigurableProductVariantsImageAssignment"><dir name="Helper"><file name="Data.php" hash="de951bf7bcd104767a9469efc94a4c81"/></dir><dir name="Model"><dir name="System"><dir name="Config"><dir name="Source"><file name="View.php" hash="f92b6ff799c59fa6965c3f9b8a42c7db"/></dir></dir></dir><file name="Observer.php" hash="7f20822d7e9a3cacac62f05b55e22d5f"/></dir></dir></dir><dir name="etc"><file name="config.xml" hash=""/><file name="system.xml" hash=""/><file name="adminhtml.xml" hash=""/></dir></target><target name="mageetc"><dir name="modules"><file name="BothInteract_ConfigurableProductVariantsImageAssignment.xml" hash="d38ef35b9d75fee8e4832a1659a82391"/></dir></target><target name="mage"><dir name="shell"><file name="set_required_images_for_configurable_product_variants.php" hash="de89b039ca425e9bc00063f65c869260"/></dir></target><target name="magelocale"><dir name="en_US"><file name="BothInteract_ConfigurableProductVariantsImageAssignment.csv" hash=""/></dir><dir name="de_DE"><file name="BothInteract_ConfigurableProductVariantsImageAssignment.csv" hash=""/></dir></target></contents>
+    <time>12:42:53</time>
+    <contents><target name="magecommunity"><dir name="BothInteract"><dir name="ConfigurableProductVariantsImageAssignment"><dir name="Helper"><file name="Data.php" hash="de951bf7bcd104767a9469efc94a4c81"/></dir><dir name="Model"><dir name="System"><dir name="Config"><dir name="Source"><file name="View.php" hash="f92b6ff799c59fa6965c3f9b8a42c7db"/></dir></dir></dir><file name="Observer.php" hash="7f20822d7e9a3cacac62f05b55e22d5f"/></dir><dir name="etc"><file name="config.xml" hash="c32bb5a1011272b3f168aa433c48ef47"/><file name="system.xml" hash="cbc673f91bccab614b9a6e653f38b3a4"/><file name="adminhtml.xml" hash="17ff98ec54bdda6275f8024ee5d5d39f"/></dir></dir></dir></target><target name="mageetc"><dir name="modules"><file name="BothInteract_ConfigurableProductVariantsImageAssignment.xml" hash="d38ef35b9d75fee8e4832a1659a82391"/></dir></target><target name="mage"><dir name="shell"><file name="set_required_images_for_configurable_product_variants.php" hash="de89b039ca425e9bc00063f65c869260"/></dir></target><target name="magelocale"><dir name="en_US"><file name="BothInteract_ConfigurableProductVariantsImageAssignment.csv" hash=""/></dir><dir name="de_DE"><file name="BothInteract_ConfigurableProductVariantsImageAssignment.csv" hash=""/></dir></target></contents>
     <compatible/>
     <dependencies><required><php><min>5.3.0</min><max>7.0.4</max></php></required></dependencies>
 </package>
