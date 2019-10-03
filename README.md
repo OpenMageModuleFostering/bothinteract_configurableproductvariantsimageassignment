@@ -1,3 +1,5 @@
+
+
 ## Original Package Description
 
 Automatically copies custom list of required image types from configurable products to variants.
